@@ -40,7 +40,7 @@ function App() {
 		chrome.scripting.executeScript({
 			target: { tabId: tab.id },
 			func: () => {
-				console.log(document.body);
+				console.log(document.body.innerText);
 				document.body.style.backgroundColor = "green";
 			},
 		});
@@ -50,6 +50,7 @@ function App() {
 	// 	5,
 	// 	false
 	// );
+	const output = "lol";
 
 	return (
 		<>
