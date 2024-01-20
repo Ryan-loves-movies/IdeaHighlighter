@@ -7,10 +7,17 @@
         "default_popup": "index.html"
     },
     "permissions": [
-        "scripting"
+        "scripting",
+        "activeTab"
     ],
     "host-permissions": [
         "http://*/*",
         "https://*/*"
+    ],
+    "content_scripts": [
+        {
+            "matches": ["*://*/*"],
+            "js": ["assets/index-7HQxHaD0.js"]
+        }
     ]
 }
