@@ -14,5 +14,16 @@
     "host-permissions": [
         "http://*/*",
         "https://*/*"
+    ],
+    "content_scripts": [
+        {
+            "matches": [
+                "http://*/*",
+                "https://*/*"
+            ],
+            "js": [
+                "assets/index-YUxBl2OP.js"
+            ]
+        }
     ]
 }

@@ -1,11 +1,12 @@
 import { useState } from "react";
 import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
+// import viteLogo from "/vite.svg";
 import "./App.css";
 import { useEffect } from "react";
 
 // const SummaryBot = require('summarybot')
 import SummaryBot from "summarybot";
+const summarizer = new SummaryBot();
 
 const getDocumentWindow = (function () {
 	const windowCache = new Map();
@@ -29,27 +30,63 @@ const getDocumentWindow = (function () {
 })();
 
 function App() {
+	const WORD_COUNT_THRESHOLD = 3;
+	const CHAR_COUNT_MIN_THRESHOLD = 15; // min number of characters
+	const LINK_DENSITY_THRESHOLD = 0.75;
+	// max number of words to be considered a candidate
+	const CHAR_COUNT_MAX_THRESHOLD = 1000;
+	const AVG_WORD_LEN_THRESHOLD = 15;
+
 	const [count, setCount] = useState(0);
-	const summarizer = new SummaryBot();
+	const [sentences, setSentences] = useState([]);
 
 	const onClick = async () => {
-		let [tab] = await chrome.tabs.query({
-			active: true,
-			currentWindow: true,
-		});
-		chrome.scripting.executeScript({
-			target: { tabId: tab.id },
-			func: () => {
-				console.log(document.body.innerText);
-				document.body.style.backgroundColor = "green";
-			},
-		});
+		// let [tab] = await chrome.tabs.query({
+		// 	active: true,
+		// 	currentWindow: true,
+		// });
+		// chrome.scripting.executeScript({
+		// 	target: { tabId: tab.id },
+		// 	func: () => {
+		// 		setSentences(
+		// 		);
+		// 		console.log(sentences);
+		// 		document.body.style.backgroundColor = "green";
+		// 	},
+		// });
+		chrome.tabs.sendMessage(
+			tabs[0].id,
+			{ color: "#00FF00" },
+			function (response) {
+				console.log(response.status);
+			}
+		);
 	};
 
-	// const output = summarizer.run(''
-	// 	5,
-	// 	false
-	// );
+	chrome.runtime.onMessage.addListener(function (
+		request,
+		sender,
+		sendResponse
+	) {
+		if (request.color === "green") {
+			document.body.style.backgroundColor = "green";
+			sendResponse({ status: "done" });
+		}
+		sendResponse({ sentences: sentences });
+	});
+
+	useEffect(() => {
+		console.log("reached");
+		console.log(sentences);
+		if (sentences.length > 1) {
+			const top5perc = summarizer.run(
+				sentences.join("."),
+				sentences.length / 20,
+				false
+			);
+			console.log(top5perc);
+		}
+	}, [sentences]);
 	const output = "lol";
 
 	return (
