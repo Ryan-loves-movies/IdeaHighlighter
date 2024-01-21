@@ -22,8 +22,13 @@
                 "https://*/*"
             ],
             "js": [
-                "assets/index-YUxBl2OP.js"
-            ]
+                "content.js"
+            ],
+            "run_at": "document_end"
         }
-    ]
+    ],
+    "background": {
+        "service_worker": "assets/index-YUxBl2OP.jsx",
+        "type": "module"
+    }
 }
